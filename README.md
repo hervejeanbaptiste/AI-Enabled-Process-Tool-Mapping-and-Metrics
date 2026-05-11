@@ -1,4 +1,4 @@
-# AI Tool Mapping Prototype
+# AI Augmented Workflow Designer and Dashboard
 
 This is a static prototype for identifying which AI tools support a process.
 
