@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Tool Mapping Prototype</title>
+    <link rel="stylesheet" href="styles.css?v=17" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">AI process inventory</p>
+          <h1>AI tool mapping</h1>
+          <p class="purpose-copy">
+            Map which AI tools are expected or available for each step and activity in a workflow.
+            Then connect usage data to see whether adoption is initial, sustained, or growing, and
+            understand AI's impact on the process.
+          </p>
+        </div>
+        <button id="resetButton" class="ghost-button" type="button">Reset sample</button>
+      </header>
+
+      <main>
+        <section class="process-header" aria-label="Process summary">
+          <label>
+            Process name
+            <input id="processName" type="text" autocomplete="off" />
+          </label>
+          <div class="summary-metrics" aria-label="Mapping progress">
+            <div>
+              <strong id="stepCount">4</strong>
+              <span>Steps</span>
+            </div>
+            <div>
+              <strong id="activityCount">0</strong>
+              <span>Activities</span>
+            </div>
+            <div>
+              <strong id="selectionCount">0</strong>
+              <span>AI tools selected</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="process-board-wrap" aria-label="Four step process">
+          <div id="processBoard" class="process-board"></div>
+          <p class="metrics-footnote">
+            Metrics source: ChatGPT Admin > Workspace analytics > GPTs. Time range: Custom.
+            Data updated May 10, 2026.
+          </p>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js?v=17"></script>
+  </body>
+</html>
