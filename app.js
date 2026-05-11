@@ -89,36 +89,36 @@ const GPT_METRICS = {
   "strategy-brief-gpt": {
     messages: 606,
     distinctUsers: 106,
-    weeklyMessages: [116, 138, 159, 193]
+    ytdWeeklyMessages: [8, 10, 12, 14, 16, 18, 20, 22, 25, 28, 31, 35, 38, 42, 46, 51, 57, 62, 71]
   },
   "opportunity-identification-gpt": {
     messages: 289,
     distinctUsers: 38,
-    weeklyMessages: [52, 66, 78, 93]
+    ytdWeeklyMessages: [3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 15, 17, 18, 20, 22, 24, 26, 30, 38]
   },
   "value-articulation-gpt": {
     messages: 505,
     distinctUsers: 48,
-    weeklyMessages: [91, 113, 137, 164]
+    ytdWeeklyMessages: [5, 6, 8, 10, 12, 14, 16, 18, 21, 23, 26, 29, 32, 35, 38, 44, 49, 55, 64]
   },
   "win-strategy-gpt": {
     messages: 347,
     distinctUsers: 45,
-    weeklyMessages: [82, 79, 88, 98]
+    ytdWeeklyMessages: [5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 17, 18, 20, 22, 24, 26, 29, 40, 53]
   },
   "demo-proposal-gpt": {
     messages: 182,
     distinctUsers: 3,
-    weeklyMessages: [24, 38, 51, 69]
+    ytdWeeklyMessages: [1, 2, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 24]
   },
   "client-driven-sow-gpt": {
     messages: 109,
     distinctUsers: 26,
-    weeklyMessages: [17, 24, 31, 37]
+    ytdWeeklyMessages: [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 9, 10, 12, 14]
   }
 };
 
-const WEEK_LABELS = ["Wk 1", "Wk 2", "Wk 3", "Wk 4"];
+const YTD_RANGE_LABEL = "Jan 5-May 11, 2026";
 
 let state = cloneData(SAMPLE_PROCESS);
 
@@ -259,8 +259,8 @@ function renderMetricsCell(step) {
 
 function renderMetricCard(tool) {
   const metrics = GPT_METRICS[tool.id];
-  const weeklyMax = Math.max(...metrics.weeklyMessages, 1);
-  const trend = getLatestWeekChange(metrics.weeklyMessages);
+  const trend = getLatestWeekChange(metrics.ytdWeeklyMessages);
+  const latestWeek = metrics.ytdWeeklyMessages.at(-1) || 0;
 
   return `
     <div class="metric-card">
@@ -268,42 +268,65 @@ function renderMetricCard(tool) {
         <strong>${escapeHtml(tool.name)}</strong>
         <span>${escapeHtml(getUsageLevel(metrics))}</span>
       </div>
+      <div class="metric-section-title">Period totals</div>
       <div class="metric-grid">
         <div>
           <b>${formatNumber(metrics.messages)}</b>
-          <small>Msgs sent</small>
+          <small>Messages</small>
         </div>
         <div>
           <b>${formatNumber(metrics.distinctUsers)}</b>
-          <small>Users</small>
+          <small>Active users</small>
         </div>
         <div>
           <b>${formatDecimal(getMessagesPerUser(metrics))}</b>
           <small>Msgs / user</small>
         </div>
       </div>
-      <div class="weekly-activity" aria-label="Last 4 weeks of message activity">
-        <div class="weekly-heading">
-          <span>Last 4 weeks</span>
+      <div class="trend-chart" aria-label="YTD weekly message volume">
+        <div class="trend-heading">
+          <span>YTD weekly message volume</span>
           <b>${formatTrend(trend)} WoW</b>
         </div>
-        <div class="weekly-bars">
-          ${metrics.weeklyMessages
-            .map(
-              (messages, index) => `
-                <div class="week-row">
-                  <span>${WEEK_LABELS[index]}</span>
-                  <div class="week-bar" aria-hidden="true">
-                    <i style="width: ${Math.max((messages / weeklyMax) * 100, 8)}%"></i>
-                  </div>
-                  <b>${formatNumber(messages)}</b>
-                </div>
-              `
-            )
-            .join("")}
+        ${renderLineChart(metrics.ytdWeeklyMessages)}
+        <div class="chart-meta">
+          <span>${YTD_RANGE_LABEL}</span>
+          <b>${formatNumber(latestWeek)} latest wk</b>
         </div>
       </div>
     </div>
+  `;
+}
+
+function renderLineChart(values) {
+  const width = 220;
+  const height = 88;
+  const padX = 8;
+  const padY = 10;
+  const max = Math.max(...values, 1);
+  const plotWidth = width - padX * 2;
+  const plotHeight = height - padY * 2;
+  const points = values.map((value, index) => {
+    const x = padX + (index / (values.length - 1)) * plotWidth;
+    const y = height - padY - (value / max) * plotHeight;
+    return { x, y };
+  });
+  const pointString = points.map((point) => `${formatCoordinate(point.x)},${formatCoordinate(point.y)}`).join(" ");
+  const areaString = [
+    `${formatCoordinate(padX)},${formatCoordinate(height - padY)}`,
+    pointString,
+    `${formatCoordinate(width - padX)},${formatCoordinate(height - padY)}`
+  ].join(" ");
+  const latest = points.at(-1);
+
+  return `
+    <svg class="line-chart" viewBox="0 0 ${width} ${height}" aria-hidden="true" focusable="false">
+      <line class="chart-grid-line" x1="${padX}" y1="${height - padY}" x2="${width - padX}" y2="${height - padY}" />
+      <line class="chart-grid-line chart-grid-line-mid" x1="${padX}" y1="${height / 2}" x2="${width - padX}" y2="${height / 2}" />
+      <polygon class="chart-area" points="${areaString}" />
+      <polyline class="chart-line" points="${pointString}" />
+      <circle class="chart-dot" cx="${formatCoordinate(latest.x)}" cy="${formatCoordinate(latest.y)}" r="3.3" />
+    </svg>
   `;
 }
 
@@ -354,6 +377,10 @@ function formatDecimal(value) {
 function formatTrend(value) {
   const rounded = Math.round(value);
   return `${rounded > 0 ? "+" : ""}${rounded}%`;
+}
+
+function formatCoordinate(value) {
+  return Number(value).toFixed(1);
 }
 
 function escapeHtml(value) {
