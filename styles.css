@@ -387,12 +387,23 @@ input[type="text"] {
 }
 
 .metric-section-title {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2px;
   margin-top: 9px;
   color: var(--muted);
   font-size: 0.68rem;
   font-weight: 900;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+
+.metric-section-title b {
+  color: var(--ink);
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .metric-empty {
