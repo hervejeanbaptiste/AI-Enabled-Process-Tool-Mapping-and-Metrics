@@ -118,7 +118,7 @@ const GPT_METRICS = {
   }
 };
 
-const YTD_RANGE_LABEL = "Jan 5-May 11, 2026";
+const CURRENT_PERIOD_LABEL = "Jan 1-May 10, 2026";
 
 let state = cloneData(SAMPLE_PROCESS);
 
@@ -268,7 +268,10 @@ function renderMetricCard(tool) {
         <strong>${escapeHtml(tool.name)}</strong>
         <span>${escapeHtml(getUsageLevel(metrics))}</span>
       </div>
-      <div class="metric-section-title">Period totals</div>
+      <div class="metric-section-title">
+        <span>Period totals</span>
+        <b>${CURRENT_PERIOD_LABEL}</b>
+      </div>
       <div class="metric-grid">
         <div>
           <b>${formatNumber(metrics.messages)}</b>
@@ -290,7 +293,7 @@ function renderMetricCard(tool) {
         </div>
         ${renderLineChart(metrics.ytdWeeklyMessages)}
         <div class="chart-meta">
-          <span>${YTD_RANGE_LABEL}</span>
+          <span>${CURRENT_PERIOD_LABEL}</span>
           <b>${formatNumber(latestWeek)} latest wk</b>
         </div>
       </div>
