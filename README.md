@@ -1,4 +1,4 @@
-# AI Augmented Workflow Designer and Dashboard
+# AI Enabled Workflow Adoption Config Tool and Dashboard
 
 This is a static prototype for identifying which AI tools support a process.
 
