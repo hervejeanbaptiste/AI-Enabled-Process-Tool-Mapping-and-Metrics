@@ -12,9 +12,9 @@ const SAMPLE_PROCESS = {
         }
       ],
       tools: [
-        { id: "strategy-brief-gpt", name: "Strategy Brief Prompt", category: "Account research", selected: true },
-        { id: "copilot", name: "Microsoft Copilot", category: "Brief creation", selected: false },
-        { id: "einstein", name: "Salesforce Einstein", category: "CRM context", selected: false }
+        { id: "strategy-brief-gpt", name: "Strategy Brief Prompt", category: "Account research", covers: [0], selected: true },
+        { id: "copilot", name: "Microsoft Copilot", category: "Brief creation", covers: [0], selected: false },
+        { id: "einstein", name: "Salesforce Einstein", category: "CRM context", covers: [0], selected: false }
       ]
     },
     {
@@ -28,9 +28,9 @@ const SAMPLE_PROCESS = {
         }
       ],
       tools: [
-        { id: "opportunity-identification-gpt", name: "Opportunity Identifier", category: "Opportunity synthesis", selected: true },
-        { id: "einstein", name: "Salesforce Einstein", category: "Opportunity signals", selected: false },
-        { id: "powerbi", name: "Power BI Copilot", category: "Pipeline analytics", selected: false }
+        { id: "opportunity-identification-gpt", name: "Opportunity Identifier", category: "Opportunity synthesis", covers: [0], selected: true },
+        { id: "einstein", name: "Salesforce Einstein", category: "Opportunity signals", covers: [0], selected: false },
+        { id: "powerbi", name: "Power BI Copilot", category: "Pipeline analytics", covers: [0], selected: false }
       ]
     },
     {
@@ -44,9 +44,9 @@ const SAMPLE_PROCESS = {
         }
       ],
       tools: [
-        { id: "value-articulation-gpt", name: "Articulating our Value to Clients", category: "Value narrative", selected: true },
-        { id: "copilot", name: "Microsoft Copilot", category: "Solution shaping", selected: false },
-        { id: "powerbi", name: "Power BI Copilot", category: "Metric exploration", selected: false }
+        { id: "value-articulation-gpt", name: "Articulating our Value to Clients", category: "Value narrative", covers: [0], selected: true },
+        { id: "copilot", name: "Microsoft Copilot", category: "Solution shaping", covers: [0], selected: false },
+        { id: "powerbi", name: "Power BI Copilot", category: "Metric exploration", covers: [0], selected: false }
       ]
     },
     {
@@ -61,9 +61,9 @@ const SAMPLE_PROCESS = {
         }
       ],
       tools: [
-        { id: "win-strategy-gpt", name: "Win Strategy & Pursuit Coach", category: "Pursuit strategy", selected: true },
-        { id: "demo-proposal-gpt", name: "Proposal & Pitch Storyteller", category: "Proposal generation", selected: true },
-        { id: "copilot", name: "Microsoft Copilot", category: "Proposal drafting", selected: false },
+        { id: "win-strategy-gpt", name: "Win Strategy & Pursuit Coach", category: "Pursuit strategy", covers: [0], selected: true },
+        { id: "demo-proposal-gpt", name: "Proposal & Pitch Storyteller", category: "Proposal generation", covers: [1], selected: true },
+        { id: "copilot", name: "Microsoft Copilot", category: "Proposal drafting", covers: [1], selected: false },
       ]
     },
     {
@@ -77,9 +77,9 @@ const SAMPLE_PROCESS = {
         }
       ],
       tools: [
-        { id: "client-driven-sow-gpt", name: "Client Driven SOW Tailor", category: "SOW generation", selected: true },
-        { id: "copilot", name: "Microsoft Copilot", category: "Meeting transcript", selected: false },
-        { id: "doc-intelligence", name: "Document Intelligence", category: "Document automation", selected: false }
+        { id: "client-driven-sow-gpt", name: "Client Driven SOW Tailor", category: "SOW generation", covers: [0], selected: true },
+        { id: "copilot", name: "Microsoft Copilot", category: "Meeting transcript", covers: [0], selected: false },
+        { id: "doc-intelligence", name: "Document Intelligence", category: "Document automation", covers: [0], selected: false }
       ]
     }
   ]
@@ -131,7 +131,16 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function bindElements() {
-  ["processName", "resetButton", "stepCount", "activityCount", "selectionCount", "processBoard"].forEach(
+  [
+    "processName",
+    "resetButton",
+    "stepCount",
+    "activityCount",
+    "selectionCount",
+    "coverageScore",
+    "coverageLabel",
+    "processBoard"
+  ].forEach(
     (id) => {
       elements[id] = document.getElementById(id);
     }
@@ -139,10 +148,6 @@ function bindElements() {
 }
 
 function bindEvents() {
-  elements.processName.addEventListener("input", () => {
-    state.name = elements.processName.value;
-  });
-
   elements.resetButton.addEventListener("click", () => {
     state = cloneData(SAMPLE_PROCESS);
     render();
@@ -150,6 +155,8 @@ function bindEvents() {
 }
 
 function render() {
+  const processCoverage = getProcessCoverage(state);
+
   elements.processName.value = state.name;
   elements.stepCount.textContent = state.steps.length;
   elements.activityCount.textContent = state.steps.reduce(
@@ -160,6 +167,8 @@ function render() {
     (sum, step) => sum + step.tools.filter((tool) => tool.selected).length,
     0
   );
+  elements.coverageScore.textContent = `${Math.round(processCoverage.percent)}%`;
+  elements.coverageLabel.textContent = processCoverage.label;
 
   elements.processBoard.innerHTML = `
     <div class="board-label">Step</div>
@@ -170,6 +179,9 @@ function render() {
 
     <div class="board-label">AI skill / tool</div>
     ${state.steps.map(renderToolCell).join("")}
+
+    <div class="board-label">Coverage</div>
+    ${state.steps.map(renderCoverageCell).join("")}
 
     <div class="board-label">Tool metrics</div>
     ${state.steps.map(renderMetricsCell).join("")}
@@ -240,6 +252,40 @@ function renderToolCell(step) {
       </ul>
       <p class="selected-note">${getSelectedToolCount(step)} of ${step.tools.length} selected</p>
     </article>
+  `;
+}
+
+function renderCoverageCell(step) {
+  const coverage = getStepCoverage(step);
+
+  return `
+    <article class="coverage-cell coverage-${coverage.status}">
+      <div class="coverage-heading">
+        <strong>${escapeHtml(coverage.label)}</strong>
+        <span>${Math.round(coverage.percent)}%</span>
+      </div>
+      <div class="coverage-bar" aria-hidden="true">
+        <i style="width: ${coverage.percent}%"></i>
+      </div>
+      <p>${coverage.covered} of ${coverage.total} activities addressed by selected tools.</p>
+      <ul class="coverage-list">
+        ${step.activities
+          .map((activity, index) => renderCoverageActivity(step, activity, index, coverage))
+          .join("")}
+      </ul>
+    </article>
+  `;
+}
+
+function renderCoverageActivity(step, activity, index, coverage) {
+  const toolNames = getSelectedToolNamesForActivity(step, index);
+  const isCovered = coverage.coveredIndexes.has(index);
+
+  return `
+    <li class="${isCovered ? "is-covered" : "is-gap"}">
+      <strong>${escapeHtml(activity.name)}</strong>
+      <span>${isCovered ? escapeHtml(toolNames.join(", ")) : "No selected tool mapped"}</span>
+    </li>
   `;
 }
 
@@ -346,6 +392,73 @@ function toggleTool(stepId, toolId, selected) {
 
 function getSelectedToolCount(step) {
   return step.tools.filter((tool) => tool.selected).length;
+}
+
+function getSelectedToolNamesForActivity(step, activityIndex) {
+  return step.tools
+    .filter((tool) => tool.selected && (tool.covers || []).includes(activityIndex))
+    .map((tool) => tool.name);
+}
+
+function getStepCoverage(step) {
+  const coveredIndexes = new Set();
+
+  step.tools
+    .filter((tool) => tool.selected)
+    .forEach((tool) => {
+      (tool.covers || []).forEach((activityIndex) => {
+        if (activityIndex < step.activities.length) {
+          coveredIndexes.add(activityIndex);
+        }
+      });
+    });
+
+  const total = step.activities.length;
+  const covered = coveredIndexes.size;
+  const percent = total ? (covered / total) * 100 : 100;
+
+  return {
+    covered,
+    coveredIndexes,
+    label: getCoverageLabel(percent),
+    percent,
+    status: getCoverageStatus(percent),
+    total
+  };
+}
+
+function getProcessCoverage(process) {
+  const totals = process.steps.reduce(
+    (summary, step) => {
+      const coverage = getStepCoverage(step);
+      summary.covered += coverage.covered;
+      summary.total += coverage.total;
+      return summary;
+    },
+    { covered: 0, total: 0 }
+  );
+  const percent = totals.total ? (totals.covered / totals.total) * 100 : 100;
+
+  return {
+    ...totals,
+    label: getCoverageLabel(percent),
+    percent,
+    status: getCoverageStatus(percent)
+  };
+}
+
+function getCoverageLabel(percent) {
+  if (percent >= 100) return "Fully addressed";
+  if (percent >= 50) return "Partially addressed";
+  if (percent > 0) return "Limited coverage";
+  return "Not addressed";
+}
+
+function getCoverageStatus(percent) {
+  if (percent >= 100) return "full";
+  if (percent >= 50) return "partial";
+  if (percent > 0) return "limited";
+  return "none";
 }
 
 function getMessagesPerUser(metrics) {
