@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>AI Enabled Workflow Adoption Config Tool and Dashboard</title>
-    <link rel="stylesheet" href="styles.css?v=21" />
+    <link rel="stylesheet" href="styles.css?v=22" />
   </head>
   <body>
     <div class="app-shell">
@@ -33,7 +33,7 @@
         <section class="process-header" aria-label="Process summary">
           <label>
             Process name
-            <input id="processName" type="text" autocomplete="off" />
+            <input id="processName" type="text" autocomplete="off" readonly aria-readonly="true" />
           </label>
           <div class="summary-metrics" aria-label="Mapping progress">
             <div>
@@ -47,6 +47,10 @@
             <div>
               <strong id="selectionCount">0</strong>
               <span>AI tools selected</span>
+            </div>
+            <div>
+              <strong id="coverageScore">0%</strong>
+              <span id="coverageLabel">Coverage</span>
             </div>
           </div>
         </section>
@@ -63,6 +67,6 @@
       </main>
     </div>
 
-    <script src="app.js?v=20"></script>
+    <script src="app.js?v=22"></script>
   </body>
 </html>
