@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>AI Enabled Workflow Adoption Config Tool and Dashboard</title>
-    <link rel="stylesheet" href="styles.css?v=22" />
+    <link rel="stylesheet" href="styles.css?v=23" />
   </head>
   <body>
     <div class="app-shell">
@@ -63,6 +63,23 @@
             are shown as prototype activity based on the selected GPT totals until weekly
             GPT-level telemetry is connected.
           </p>
+          <section class="metrics-legend" aria-label="Tool metric label definitions">
+            <h2>Tool adoption label definitions</h2>
+            <dl>
+              <div>
+                <dt>Growing</dt>
+                <dd>500+ messages and 25+ active users in the current period.</dd>
+              </div>
+              <div>
+                <dt>Sustained</dt>
+                <dd>100+ messages and 10+ active users in the current period.</dd>
+              </div>
+              <div>
+                <dt>Initial</dt>
+                <dd>Usage below the sustained threshold; early or limited adoption.</dd>
+              </div>
+            </dl>
+          </section>
         </section>
       </main>
     </div>
