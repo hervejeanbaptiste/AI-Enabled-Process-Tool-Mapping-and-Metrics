@@ -623,6 +623,34 @@ input[readonly] {
   line-height: 1.35;
 }
 
+.skill-file-card {
+  border-color: rgba(183, 101, 5, 0.28);
+  background: #fffaf2;
+}
+
+.skill-file-source {
+  display: grid;
+  gap: 3px;
+  margin-top: 10px;
+  border-top: 1px solid var(--line);
+  padding-top: 9px;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 850;
+}
+
+.skill-file-source b {
+  color: var(--ink);
+  font-size: 0.68rem;
+}
+
+.metric-events {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.68rem;
+  line-height: 1.3;
+}
+
 .metric-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
