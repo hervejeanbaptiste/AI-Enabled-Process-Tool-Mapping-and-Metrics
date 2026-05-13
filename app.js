@@ -226,13 +226,13 @@ function render() {
     <div class="board-label">Activities</div>
     ${state.steps.map(renderActivityCell).join("")}
 
-    <div class="board-label">AI skill / tool</div>
+    <div class="board-label">AI CAPABILITIES</div>
     ${state.steps.map(renderToolCell).join("")}
 
-    <div class="board-label">Coverage</div>
+    <div class="board-label">EXTENT AI AUGMENTED</div>
     ${state.steps.map(renderCoverageCell).join("")}
 
-    <div class="board-label">Tool metrics</div>
+    <div class="board-label">UTILIZATION METRICS</div>
     ${state.steps.map(renderMetricsCell).join("")}
   `;
 
