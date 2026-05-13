@@ -47,8 +47,7 @@ button {
 
 .topbar,
 .process-header,
-.summary-metrics,
-.tool-option {
+.summary-metrics {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -392,8 +391,10 @@ input[readonly] {
 
 .tool-option {
   min-height: 44px;
+  display: flex;
   align-items: flex-start;
-  justify-content: flex-start;
+  justify-content: space-between;
+  gap: 10px;
   border: 1px solid var(--line);
   border-radius: 7px;
   background: #fff;
@@ -413,17 +414,54 @@ input[readonly] {
   accent-color: var(--teal);
 }
 
-.tool-option strong {
+.tool-check {
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex: 1 1 auto;
+  color: inherit;
+  cursor: pointer;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.tool-copy {
+  min-width: 0;
+  display: block;
+}
+
+.tool-copy strong {
   display: block;
   font-size: 0.84rem;
   line-height: 1.2;
 }
 
-.tool-option span {
+.tool-copy span {
   display: block;
   margin-top: 2px;
   color: var(--muted);
   font-size: 0.72rem;
+  line-height: 1.3;
+}
+
+.tool-link {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  border: 1px solid rgba(18, 110, 130, 0.28);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--teal-dark);
+  padding: 4px 8px;
+  font-size: 0.66rem;
+  font-weight: 900;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+.tool-link:hover {
+  border-color: var(--teal);
+  background: #f2fbfc;
 }
 
 .selected-note {
