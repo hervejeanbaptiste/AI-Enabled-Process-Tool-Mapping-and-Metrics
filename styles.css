@@ -264,13 +264,14 @@ input[readonly] {
   left: 0;
   z-index: 2;
   display: grid;
-  align-content: center;
+  place-items: center;
   min-height: 78px;
   border: 1px solid var(--line);
   border-radius: 7px;
   background: #fff;
   color: var(--teal-dark);
   padding: 12px;
+  text-align: center;
   font-size: 0.72rem;
   font-weight: 950;
   letter-spacing: 0.08em;
