@@ -12,7 +12,16 @@ const SAMPLE_PROCESS = {
         }
       ],
       tools: [
-        { id: "strategy-brief-gpt", name: "Strategy Brief Prompt", category: "Account research", covers: [0], selected: true },
+        {
+          id: "strategy-brief-gpt",
+          name: "Strategy Brief Prompt",
+          category: "Account research",
+          type: "Custom GPT",
+          owner: "Herve Jean-Baptiste",
+          url: "https://chatgpt.com/g/g-692de621572c8191bb72b763f2809b6b-strategy-brief-prompt",
+          covers: [0],
+          selected: true
+        },
         { id: "copilot", name: "Microsoft Copilot", category: "Brief creation", covers: [0], selected: false },
         { id: "einstein", name: "Salesforce Einstein", category: "CRM context", covers: [0], selected: false }
       ]
@@ -28,7 +37,16 @@ const SAMPLE_PROCESS = {
         }
       ],
       tools: [
-        { id: "opportunity-identification-gpt", name: "Opportunity Identifier", category: "Opportunity synthesis", covers: [0], selected: true },
+        {
+          id: "opportunity-identification-gpt",
+          name: "Opportunity Identifier",
+          category: "Opportunity synthesis",
+          type: "Custom GPT",
+          owner: "Jessica Pratt",
+          url: "https://chatgpt.com/g/g-69e28998c9288191a047c8599d953ed4-opportunity-identifier",
+          covers: [0],
+          selected: true
+        },
         { id: "einstein", name: "Salesforce Einstein", category: "Opportunity signals", covers: [0], selected: false },
         { id: "powerbi", name: "Power BI Copilot", category: "Pipeline analytics", covers: [0], selected: false }
       ]
@@ -44,7 +62,16 @@ const SAMPLE_PROCESS = {
         }
       ],
       tools: [
-        { id: "value-articulation-gpt", name: "Articulating our Value to Clients", category: "Value narrative", covers: [0], selected: true },
+        {
+          id: "value-articulation-gpt",
+          name: "Articulating our Value to Clients",
+          category: "Value narrative",
+          type: "Custom GPT",
+          owner: "Jessica Pratt",
+          url: "https://chatgpt.com/g/g-69c1d751d970819187c82fa5ed9146cf-articulating-our-value-to-clients",
+          covers: [0],
+          selected: true
+        },
         { id: "copilot", name: "Microsoft Copilot", category: "Solution shaping", covers: [0], selected: false },
         { id: "powerbi", name: "Power BI Copilot", category: "Metric exploration", covers: [0], selected: false }
       ]
@@ -61,8 +88,26 @@ const SAMPLE_PROCESS = {
         }
       ],
       tools: [
-        { id: "win-strategy-gpt", name: "Win Strategy & Pursuit Coach", category: "Pursuit strategy", covers: [0], selected: true },
-        { id: "demo-proposal-gpt", name: "Proposal & Pitch Storyteller", category: "Proposal generation", covers: [1], selected: true },
+        {
+          id: "win-strategy-gpt",
+          name: "Win Strategy & Pursuit Coach",
+          category: "Pursuit strategy",
+          type: "Custom GPT",
+          owner: "Michele Catalano",
+          url: "https://chatgpt.com/g/g-69d5cd91fc348191ae0ee69dfe202858-win-strategy-pursuit-coach",
+          covers: [0],
+          selected: true
+        },
+        {
+          id: "marketing-proposal-skill",
+          name: "Official - Marketing Proposal Skill",
+          category: "Proposal design and tone",
+          type: "Skill",
+          owner: "Jesse Sargeant",
+          url: "https://westmonroe-cloud.com/secure/static/ai-store/prompt/7e6489ee-d651-4ef0-9175-3c4fc5339cfb",
+          covers: [1],
+          selected: true
+        },
         { id: "copilot", name: "Microsoft Copilot", category: "Proposal drafting", covers: [1], selected: false },
       ]
     },
@@ -77,7 +122,16 @@ const SAMPLE_PROCESS = {
         }
       ],
       tools: [
-        { id: "client-driven-sow-gpt", name: "Client Driven SOW Tailor", category: "SOW generation", covers: [0], selected: true },
+        {
+          id: "client-driven-sow-gpt",
+          name: "Client Driven SOW Tailor",
+          category: "SOW generation",
+          type: "Custom GPT",
+          owner: "Nate Croutch",
+          url: "https://chatgpt.com/g/g-6960579bc1948191b52b87ea6dbceaa6-client-driven-sow-tailor",
+          covers: [0],
+          selected: true
+        },
         { id: "copilot", name: "Microsoft Copilot", category: "Meeting transcript", covers: [0], selected: false },
         { id: "doc-intelligence", name: "Document Intelligence", category: "Document automation", covers: [0], selected: false }
       ]
@@ -87,29 +141,24 @@ const SAMPLE_PROCESS = {
 
 const GPT_METRICS = {
   "strategy-brief-gpt": {
-    messages: 606,
+    messages: 602,
     distinctUsers: 106,
-    ytdWeeklyMessages: [8, 10, 12, 14, 16, 18, 20, 22, 25, 28, 31, 35, 38, 42, 46, 51, 57, 62, 71]
+    ytdWeeklyMessages: [8, 10, 12, 14, 16, 18, 20, 22, 25, 28, 31, 35, 38, 42, 46, 51, 57, 62, 67]
   },
   "opportunity-identification-gpt": {
-    messages: 289,
+    messages: 291,
     distinctUsers: 38,
-    ytdWeeklyMessages: [3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 15, 17, 18, 20, 22, 24, 26, 30, 38]
+    ytdWeeklyMessages: [3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 15, 17, 18, 20, 22, 24, 26, 30, 40]
   },
   "value-articulation-gpt": {
-    messages: 505,
-    distinctUsers: 48,
-    ytdWeeklyMessages: [5, 6, 8, 10, 12, 14, 16, 18, 21, 23, 26, 29, 32, 35, 38, 44, 49, 55, 64]
+    messages: 499,
+    distinctUsers: 47,
+    ytdWeeklyMessages: [5, 6, 8, 10, 12, 14, 16, 18, 21, 23, 26, 29, 32, 35, 38, 44, 49, 55, 58]
   },
   "win-strategy-gpt": {
     messages: 347,
     distinctUsers: 45,
     ytdWeeklyMessages: [5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 17, 18, 20, 22, 24, 26, 29, 40, 53]
-  },
-  "demo-proposal-gpt": {
-    messages: 182,
-    distinctUsers: 3,
-    ytdWeeklyMessages: [1, 2, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 24]
   },
   "client-driven-sow-gpt": {
     messages: 109,
@@ -233,18 +282,21 @@ function renderToolCell(step) {
           .map(
             (tool) => `
               <li>
-                <label class="tool-option">
-                  <input
-                    type="checkbox"
-                    data-step-id="${escapeAttribute(step.id)}"
-                    data-tool-id="${escapeAttribute(tool.id)}"
-                    ${tool.selected ? "checked" : ""}
-                  />
-                  <span>
-                    <strong>${escapeHtml(tool.name)}</strong>
-                    <span>${escapeHtml(tool.category)}</span>
-                  </span>
-                </label>
+                <div class="tool-option">
+                  <label class="tool-check">
+                    <input
+                      type="checkbox"
+                      data-step-id="${escapeAttribute(step.id)}"
+                      data-tool-id="${escapeAttribute(tool.id)}"
+                      ${tool.selected ? "checked" : ""}
+                    />
+                    <span class="tool-copy">
+                      <strong>${escapeHtml(tool.name)}</strong>
+                      <span>${escapeHtml(getToolMeta(tool))}</span>
+                    </span>
+                  </label>
+                  ${renderToolLink(tool)}
+                </div>
               </li>
             `
           )
@@ -297,7 +349,7 @@ function renderMetricsCell(step) {
       ${
         gptTools.length
           ? `<div class="metrics-list">${gptTools.map(renderMetricCard).join("")}</div>`
-          : `<div class="metric-empty">Select a GPT to show usage metrics.</div>`
+          : `<div class="metric-empty">No GPT usage metrics are connected for the selected tool.</div>`
       }
     </article>
   `;
@@ -398,6 +450,22 @@ function getSelectedToolNamesForActivity(step, activityIndex) {
   return step.tools
     .filter((tool) => tool.selected && (tool.covers || []).includes(activityIndex))
     .map((tool) => tool.name);
+}
+
+function getToolMeta(tool) {
+  const details = [tool.category, tool.type, tool.owner].filter(Boolean);
+  return details.join(" - ");
+}
+
+function renderToolLink(tool) {
+  if (!tool.url) return "";
+
+  const label = tool.type === "Skill" ? "Open skill" : "Open GPT";
+  return `
+    <a class="tool-link" href="${escapeAttribute(tool.url)}" target="_blank" rel="noopener noreferrer">
+      ${label}
+    </a>
+  `;
 }
 
 function getStepCoverage(step) {
