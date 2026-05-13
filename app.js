@@ -195,7 +195,6 @@ document.addEventListener("DOMContentLoaded", () => {
 function bindElements() {
   [
     "processName",
-    "resetButton",
     "stepCount",
     "activityCount",
     "selectionCount",
@@ -210,10 +209,7 @@ function bindElements() {
 }
 
 function bindEvents() {
-  elements.resetButton.addEventListener("click", () => {
-    state = cloneData(SAMPLE_PROCESS);
-    render();
-  });
+  return;
 }
 
 function render() {
@@ -233,7 +229,7 @@ function render() {
   elements.coverageLabel.textContent = processCoverage.label;
 
   elements.processBoard.innerHTML = `
-    <div class="board-label">Step</div>
+    <div class="board-label">Steps</div>
     ${state.steps.map(renderStepCell).join("")}
 
     <div class="board-label">Activities</div>
