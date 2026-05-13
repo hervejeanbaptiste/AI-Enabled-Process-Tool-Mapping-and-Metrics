@@ -167,6 +167,19 @@ const GPT_METRICS = {
   }
 };
 
+const SKILL_FILE_METRICS = {
+  "marketing-proposal-skill": {
+    title: "Skills Files Access Metrics",
+    fileName: "Proposal Skills.zip",
+    source: "SharePoint/Purview file activity",
+    scope: "Underlying file access from anywhere",
+    events: ["FileAccessed", "FileDownloaded", "FilePreviewed"],
+    accesses: null,
+    distinctUsers: null,
+    downloads: null
+  }
+};
+
 const CURRENT_PERIOD_LABEL = "Jan 1-May 10, 2026";
 
 let state = cloneData(SAMPLE_PROCESS);
@@ -342,17 +355,25 @@ function renderCoverageActivity(step, activity, index, coverage) {
 }
 
 function renderMetricsCell(step) {
-  const gptTools = step.tools.filter((tool) => tool.selected && GPT_METRICS[tool.id]);
+  const metricTools = step.tools.filter(
+    (tool) => tool.selected && (GPT_METRICS[tool.id] || SKILL_FILE_METRICS[tool.id])
+  );
 
   return `
     <article class="metrics-cell">
       ${
-        gptTools.length
-          ? `<div class="metrics-list">${gptTools.map(renderMetricCard).join("")}</div>`
+        metricTools.length
+          ? `<div class="metrics-list">${metricTools.map(renderMetricBlock).join("")}</div>`
           : `<div class="metric-empty">No GPT usage metrics are connected for the selected tool.</div>`
       }
     </article>
   `;
+}
+
+function renderMetricBlock(tool) {
+  if (GPT_METRICS[tool.id]) return renderMetricCard(tool);
+  if (SKILL_FILE_METRICS[tool.id]) return renderSkillFileMetricCard(tool);
+  return "";
 }
 
 function renderMetricCard(tool) {
@@ -395,6 +416,42 @@ function renderMetricCard(tool) {
           <b>${formatNumber(latestWeek)} latest wk</b>
         </div>
       </div>
+    </div>
+  `;
+}
+
+function renderSkillFileMetricCard(tool) {
+  const metrics = SKILL_FILE_METRICS[tool.id];
+
+  return `
+    <div class="metric-card skill-file-card">
+      <div class="metric-card-heading">
+        <strong>${escapeHtml(metrics.title)}</strong>
+        <span>File access</span>
+      </div>
+      <div class="metric-section-title">
+        <span>${escapeHtml(tool.name)}</span>
+        <b>${escapeHtml(metrics.fileName)}</b>
+      </div>
+      <div class="metric-grid">
+        <div>
+          <b>${formatMetricValue(metrics.accesses)}</b>
+          <small>Accesses</small>
+        </div>
+        <div>
+          <b>${formatMetricValue(metrics.distinctUsers)}</b>
+          <small>Distinct users</small>
+        </div>
+        <div>
+          <b>${formatMetricValue(metrics.downloads)}</b>
+          <small>Downloads</small>
+        </div>
+      </div>
+      <div class="skill-file-source">
+        <span>${escapeHtml(metrics.source)}</span>
+        <b>${escapeHtml(metrics.scope)}</b>
+      </div>
+      <p class="metric-events">Events: ${metrics.events.map(escapeHtml).join(", ")}</p>
     </div>
   `;
 }
@@ -549,6 +606,10 @@ function getLatestWeekChange(values) {
 
 function formatNumber(value) {
   return Number(value).toLocaleString();
+}
+
+function formatMetricValue(value) {
+  return value === null || value === undefined ? "--" : formatNumber(value);
 }
 
 function formatDecimal(value) {
