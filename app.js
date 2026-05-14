@@ -173,10 +173,10 @@ const SKILL_FILE_METRICS = {
     fileName: "Proposal Skills.zip",
     source: "SharePoint/Purview file activity",
     scope: "Underlying file access from anywhere",
-    events: ["FileAccessed", "FileDownloaded", "FilePreviewed"],
-    accesses: null,
-    distinctUsers: null,
-    downloads: null
+    events: ["FileAccessed", "FileDownloaded"],
+    estimateFrom: "Same-column GPT message volume",
+    accessRate: 0.42,
+    downloadRate: 0.18
   }
 };
 
@@ -359,16 +359,16 @@ function renderMetricsCell(step) {
     <article class="metrics-cell">
       ${
         metricTools.length
-          ? `<div class="metrics-list">${metricTools.map(renderMetricBlock).join("")}</div>`
+          ? `<div class="metrics-list">${metricTools.map((tool) => renderMetricBlock(tool, step)).join("")}</div>`
           : `<div class="metric-empty">No GPT usage metrics are connected for the selected tool.</div>`
       }
     </article>
   `;
 }
 
-function renderMetricBlock(tool) {
+function renderMetricBlock(tool, step) {
   if (GPT_METRICS[tool.id]) return renderMetricCard(tool);
-  if (SKILL_FILE_METRICS[tool.id]) return renderSkillFileMetricCard(tool);
+  if (SKILL_FILE_METRICS[tool.id]) return renderSkillFileMetricCard(tool, step);
   return "";
 }
 
@@ -416,33 +416,33 @@ function renderMetricCard(tool) {
   `;
 }
 
-function renderSkillFileMetricCard(tool) {
+function renderSkillFileMetricCard(tool, step) {
   const metrics = SKILL_FILE_METRICS[tool.id];
+  const estimate = getSkillFileEstimate(step, metrics);
 
   return `
     <div class="metric-card skill-file-card">
       <div class="metric-card-heading">
         <strong>${escapeHtml(metrics.title)}</strong>
-        <span>File access</span>
+        <span>Prototype estimate</span>
       </div>
       <div class="metric-section-title">
         <span>${escapeHtml(tool.name)}</span>
         <b>${escapeHtml(metrics.fileName)}</b>
       </div>
-      <div class="metric-grid">
+      <div class="metric-grid skill-file-grid">
         <div>
-          <b>${formatMetricValue(metrics.accesses)}</b>
+          <b>${formatNumber(estimate.accesses)}</b>
           <small>Accesses</small>
         </div>
         <div>
-          <b>${formatMetricValue(metrics.distinctUsers)}</b>
-          <small>Distinct users</small>
-        </div>
-        <div>
-          <b>${formatMetricValue(metrics.downloads)}</b>
+          <b>${formatNumber(estimate.downloads)}</b>
           <small>Downloads</small>
         </div>
       </div>
+      <p class="prototype-note">
+        Not real usage data. Estimated from ${escapeHtml(estimate.sourceToolName)} GPT message volume; pending SharePoint/Purview integration.
+      </p>
       <div class="skill-file-source">
         <span>${escapeHtml(metrics.source)}</span>
         <b>${escapeHtml(metrics.scope)}</b>
@@ -450,6 +450,20 @@ function renderSkillFileMetricCard(tool) {
       <p class="metric-events">Events: ${metrics.events.map(escapeHtml).join(", ")}</p>
     </div>
   `;
+}
+
+function getSkillFileEstimate(step, metrics) {
+  const sourceTool =
+    step.tools.find((tool) => tool.selected && GPT_METRICS[tool.id]) ||
+    step.tools.find((tool) => GPT_METRICS[tool.id]);
+  const sourceMetrics = sourceTool ? GPT_METRICS[sourceTool.id] : null;
+  const sourceMessages = sourceMetrics ? sourceMetrics.messages : 0;
+
+  return {
+    accesses: Math.round(sourceMessages * metrics.accessRate),
+    downloads: Math.round(sourceMessages * metrics.downloadRate),
+    sourceToolName: sourceTool ? sourceTool.name : metrics.estimateFrom
+  };
 }
 
 function renderLineChart(values) {
@@ -602,10 +616,6 @@ function getLatestWeekChange(values) {
 
 function formatNumber(value) {
   return Number(value).toLocaleString();
-}
-
-function formatMetricValue(value) {
-  return value === null || value === undefined ? "--" : formatNumber(value);
 }
 
 function formatDecimal(value) {
