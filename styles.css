@@ -652,11 +652,27 @@ input[readonly] {
   line-height: 1.3;
 }
 
+.prototype-note {
+  margin: 9px 0 0;
+  border: 1px solid rgba(183, 101, 5, 0.28);
+  border-radius: 6px;
+  background: #fff4df;
+  color: #704200;
+  padding: 7px 8px;
+  font-size: 0.68rem;
+  font-weight: 850;
+  line-height: 1.3;
+}
+
 .metric-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 6px;
   margin-top: 9px;
+}
+
+.metric-grid.skill-file-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .metric-grid div {
