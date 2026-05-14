@@ -238,10 +238,10 @@ function render() {
     <div class="board-label">AI CAPABILITIES</div>
     ${state.steps.map(renderToolCell).join("")}
 
-    <div class="board-label">EXTENT AI AUGMENTED</div>
+    <div class="board-label">AI AUGMENTATION ASSESSMENT</div>
     ${state.steps.map(renderCoverageCell).join("")}
 
-    <div class="board-label">UTILIZATION METRICS</div>
+    <div class="board-label">AI UTILIZATION METRICS</div>
     ${state.steps.map(renderMetricsCell).join("")}
   `;
 
@@ -406,7 +406,7 @@ function renderMetricCard(tool) {
           <span>YTD weekly message volume</span>
           <b>${formatTrend(trend)} WoW</b>
         </div>
-        ${renderLineChart(metrics.ytdWeeklyMessages)}
+        ${renderBarChart(metrics.ytdWeeklyMessages)}
         <div class="chart-meta">
           <span>${CURRENT_PERIOD_LABEL}</span>
           <b>${formatNumber(latestWeek)} latest wk</b>
@@ -466,7 +466,7 @@ function getSkillFileEstimate(step, metrics) {
   };
 }
 
-function renderLineChart(values) {
+function renderBarChart(values) {
   const width = 220;
   const height = 88;
   const padX = 8;
@@ -474,26 +474,21 @@ function renderLineChart(values) {
   const max = Math.max(...values, 1);
   const plotWidth = width - padX * 2;
   const plotHeight = height - padY * 2;
-  const points = values.map((value, index) => {
-    const x = padX + (index / (values.length - 1)) * plotWidth;
-    const y = height - padY - (value / max) * plotHeight;
-    return { x, y };
+  const gap = 2;
+  const barWidth = (plotWidth - gap * (values.length - 1)) / values.length;
+  const bars = values.map((value, index) => {
+    const barHeight = value ? Math.max((value / max) * plotHeight, 2) : 0;
+    const x = padX + index * (barWidth + gap);
+    const y = height - padY - barHeight;
+    const className = index === values.length - 1 ? "chart-bar chart-bar-latest" : "chart-bar";
+    return `<rect class="${className}" x="${formatCoordinate(x)}" y="${formatCoordinate(y)}" width="${formatCoordinate(barWidth)}" height="${formatCoordinate(barHeight)}" rx="1.8" />`;
   });
-  const pointString = points.map((point) => `${formatCoordinate(point.x)},${formatCoordinate(point.y)}`).join(" ");
-  const areaString = [
-    `${formatCoordinate(padX)},${formatCoordinate(height - padY)}`,
-    pointString,
-    `${formatCoordinate(width - padX)},${formatCoordinate(height - padY)}`
-  ].join(" ");
-  const latest = points.at(-1);
 
   return `
-    <svg class="line-chart" viewBox="0 0 ${width} ${height}" aria-hidden="true" focusable="false">
+    <svg class="bar-chart" viewBox="0 0 ${width} ${height}" aria-hidden="true" focusable="false">
       <line class="chart-grid-line" x1="${padX}" y1="${height - padY}" x2="${width - padX}" y2="${height - padY}" />
       <line class="chart-grid-line chart-grid-line-mid" x1="${padX}" y1="${height / 2}" x2="${width - padX}" y2="${height / 2}" />
-      <polygon class="chart-area" points="${areaString}" />
-      <polyline class="chart-line" points="${pointString}" />
-      <circle class="chart-dot" cx="${formatCoordinate(latest.x)}" cy="${formatCoordinate(latest.y)}" r="3.3" />
+      ${bars.join("")}
     </svg>
   `;
 }
