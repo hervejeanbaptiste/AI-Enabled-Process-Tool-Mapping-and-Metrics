@@ -194,6 +194,18 @@ const SKILL_FILE_METRICS = {
   }
 };
 
+const BUILD_ACTIVITY_METRICS = {
+  "ai-build-tools": {
+    title: "Build Activity Evidence",
+    platforms: ["ChatGPT", "Codex", "Google AI Studio"],
+    source: "Platform build telemetry",
+    scope: "Demo/tool artifacts built on indicated platforms",
+    estimateFrom: "Same-column GPT message volume",
+    platformDivisor: 175,
+    buildRate: 0.018
+  }
+};
+
 const CURRENT_PERIOD_LABEL = "Jan 1-May 10, 2026";
 
 let state = cloneData(SAMPLE_PROCESS);
@@ -366,7 +378,9 @@ function renderCoverageActivity(step, activity, index, coverage) {
 
 function renderMetricsCell(step) {
   const metricTools = step.tools.filter(
-    (tool) => tool.selected && (GPT_METRICS[tool.id] || SKILL_FILE_METRICS[tool.id])
+    (tool) =>
+      tool.selected &&
+      (GPT_METRICS[tool.id] || SKILL_FILE_METRICS[tool.id] || BUILD_ACTIVITY_METRICS[tool.id])
   );
 
   return `
@@ -374,7 +388,7 @@ function renderMetricsCell(step) {
       ${
         metricTools.length
           ? `<div class="metrics-list">${metricTools.map((tool) => renderMetricBlock(tool, step)).join("")}</div>`
-          : `<div class="metric-empty">No GPT usage metrics are connected for the selected tool.</div>`
+          : `<div class="metric-empty">No utilization metrics are connected for the selected capability.</div>`
       }
     </article>
   `;
@@ -383,6 +397,7 @@ function renderMetricsCell(step) {
 function renderMetricBlock(tool, step) {
   if (GPT_METRICS[tool.id]) return renderMetricCard(tool);
   if (SKILL_FILE_METRICS[tool.id]) return renderSkillFileMetricCard(tool, step);
+  if (BUILD_ACTIVITY_METRICS[tool.id]) return renderBuildActivityMetricCard(tool, step);
   return "";
 }
 
@@ -476,6 +491,65 @@ function getSkillFileEstimate(step, metrics) {
   return {
     accesses: Math.round(sourceMessages * metrics.accessRate),
     downloads: Math.round(sourceMessages * metrics.downloadRate),
+    sourceToolName: sourceTool ? sourceTool.name : metrics.estimateFrom
+  };
+}
+
+function renderBuildActivityMetricCard(tool, step) {
+  const metrics = BUILD_ACTIVITY_METRICS[tool.id];
+  const estimate = getBuildActivityEstimate(step, metrics);
+
+  return `
+    <div class="metric-card skill-file-card">
+      <div class="metric-card-heading">
+        <strong>${escapeHtml(metrics.title)}</strong>
+        <span>Prototype estimate</span>
+      </div>
+      <div class="metric-section-title">
+        <span>${escapeHtml(tool.name)}</span>
+        <b>${escapeHtml(metrics.platforms.join(", "))}</b>
+      </div>
+      <div class="metric-grid">
+        <div>
+          <b>${escapeHtml(estimate.evidenceLabel)}</b>
+          <small>Build evidence</small>
+        </div>
+        <div>
+          <b>${formatNumber(estimate.platformsWithBuilds)} of ${formatNumber(metrics.platforms.length)}</b>
+          <small>Platforms with builds</small>
+        </div>
+        <div>
+          <b>${formatNumber(estimate.buildArtifacts)}</b>
+          <small>Build artifacts</small>
+        </div>
+      </div>
+      <p class="prototype-note">
+        Not real usage data. Placeholder estimate from ${escapeHtml(estimate.sourceToolName)} GPT message volume; pending ChatGPT, Codex, and Google AI Studio build telemetry.
+      </p>
+      <div class="skill-file-source">
+        <span>${escapeHtml(metrics.source)}</span>
+        <b>${escapeHtml(metrics.scope)}</b>
+      </div>
+      <p class="metric-events">Platforms: ${metrics.platforms.map(escapeHtml).join(", ")}</p>
+    </div>
+  `;
+}
+
+function getBuildActivityEstimate(step, metrics) {
+  const sourceTool =
+    step.tools.find((tool) => tool.selected && GPT_METRICS[tool.id]) ||
+    step.tools.find((tool) => GPT_METRICS[tool.id]);
+  const sourceMetrics = sourceTool ? GPT_METRICS[sourceTool.id] : null;
+  const sourceMessages = sourceMetrics ? sourceMetrics.messages : 0;
+  const platformsWithBuilds = Math.max(
+    1,
+    Math.min(metrics.platforms.length, Math.round(sourceMessages / metrics.platformDivisor))
+  );
+
+  return {
+    evidenceLabel: "1+ tool",
+    platformsWithBuilds,
+    buildArtifacts: Math.max(1, Math.round(sourceMessages * metrics.buildRate)),
     sourceToolName: sourceTool ? sourceTool.name : metrics.estimateFrom
   };
 }
