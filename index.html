@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Adoption Monitor: AI Enabled Workflows</title>
-    <link rel="stylesheet" href="styles.css?v=28" />
+    <link rel="stylesheet" href="styles.css?v=29" />
   </head>
   <body>
     <div class="app-shell">
@@ -57,6 +57,32 @@
           </div>
         </section>
 
+        <section class="metrics-legend" aria-label="Definitions">
+          <h2>Definitions</h2>
+          <dl>
+            <div>
+              <dt>Growing</dt>
+              <dd>500+ messages and 25+ active users.</dd>
+            </div>
+            <div>
+              <dt>Sustained</dt>
+              <dd>100+ messages and 10+ active users.</dd>
+            </div>
+            <div>
+              <dt>Initial</dt>
+              <dd>Below the sustained threshold.</dd>
+            </div>
+            <div>
+              <dt>Fully addressed</dt>
+              <dd>Every activity has a selected AI capability.</dd>
+            </div>
+            <div>
+              <dt>Skills files</dt>
+              <dd>Prototype access/download estimates pending integration.</dd>
+            </div>
+          </dl>
+        </section>
+
         <section class="process-board-wrap" aria-label="Four step process">
           <div id="processBoard" class="process-board"></div>
           <p class="metrics-footnote">
@@ -65,35 +91,10 @@
             are shown as prototype activity based on the selected GPT totals until weekly
             GPT-level telemetry is connected.
           </p>
-          <section class="metrics-legend" aria-label="Tool metric label definitions">
-            <h2>Definitions</h2>
-            <dl>
-              <div>
-                <dt>Growing</dt>
-                <dd>500+ messages and 25+ active users in the current period.</dd>
-              </div>
-              <div>
-                <dt>Sustained</dt>
-                <dd>100+ messages and 10+ active users in the current period.</dd>
-              </div>
-              <div>
-                <dt>Initial</dt>
-                <dd>Usage below the sustained threshold; early or limited adoption.</dd>
-              </div>
-              <div>
-                <dt>Fully addressed</dt>
-                <dd>Every activity in the step or overall process has at least one selected AI capability mapped to it.</dd>
-              </div>
-              <div>
-                <dt>Skills Files Access Metrics</dt>
-                <dd>Prototype estimates for underlying skill-file accesses and downloads. Values are not real usage data until SharePoint/Purview integration is connected.</dd>
-              </div>
-            </dl>
-          </section>
         </section>
       </main>
     </div>
 
-    <script src="app.js?v=29"></script>
+    <script src="app.js?v=30"></script>
   </body>
 </html>
