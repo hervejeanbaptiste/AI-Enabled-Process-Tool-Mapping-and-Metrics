@@ -85,6 +85,10 @@ const SAMPLE_PROCESS = {
         {
           name: "Create demo and proposal",
           type: "Create demos and automated proposals in minutes"
+        },
+        {
+          name: "Build guided demo",
+          type: "Walk through demo creation using ChatGPT, Codex, or Google AI Studio based on the preferred tool"
         }
       ],
       tools: [
@@ -109,6 +113,16 @@ const SAMPLE_PROCESS = {
           selected: true
         },
         { id: "copilot", name: "Microsoft Copilot", category: "Proposal drafting", covers: [1], selected: false },
+        {
+          id: "ai-build-tools",
+          name: "ChatGPT, Codex, or Google AI Studio",
+          category: "Guided demo build",
+          type: "Guide",
+          owner: "AI Builders Guide",
+          url: "https://howto.westmonroe.com/a/2068660-ai-builders-guide",
+          covers: [2],
+          selected: true
+        }
       ]
     },
     {
@@ -522,12 +536,18 @@ function getToolMeta(tool) {
 function renderToolLink(tool) {
   if (!tool.url) return "";
 
-  const label = tool.type === "Skill" ? "Open skill" : "Open GPT";
+  const label = getToolLinkLabel(tool);
   return `
     <a class="tool-link" href="${escapeAttribute(tool.url)}" target="_blank" rel="noopener noreferrer">
       ${label}
     </a>
   `;
+}
+
+function getToolLinkLabel(tool) {
+  if (tool.type === "Skill") return "Open skill";
+  if (tool.type === "Guide") return "Open guide";
+  return "Open GPT";
 }
 
 function getStepCoverage(step) {
